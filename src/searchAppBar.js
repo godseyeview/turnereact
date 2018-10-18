@@ -7,6 +7,7 @@ import InputBase from '@material-ui/core/InputBase';
 import { fade } from '@material-ui/core/styles/colorManipulator';
 import { withStyles } from '@material-ui/core/styles';
 import SearchIcon from '@material-ui/icons/Search';
+ 
 
 const styles = theme => ({
   root: {
@@ -62,33 +63,40 @@ const styles = theme => ({
   },  
 });
 
+export const TitleContext = React.createContext('titles');
+
 class SearchAppBar extends React.Component {
- 
+  state = {
+    titles : []
+  }
 
   handleChange(value) {
-    console.log(value)
     fetch('http://localhost:3000/titles/' + value, {'mode': 'no-cors'})
-      .then(function(response) {
+      .then((response) => {
         if (response.status !== 200) {
           console.log('Looks like there was a problem. Status Code: ' +
             response.status);
           return;
         }        
-        response.json().then(function(data) {
-          console.log(data);
+        response.json().then((titles) => {
+          this.props.onUpdate(titles)                    
         });
       })
-      .catch(function*(err) {
+      .catch(function(err) {
         console.log('Fetch Error :-S', err);
       })
   }
 
   
-
+  
   render() {
     const { classes } = this.props;
+    
+    
     return (
+      
       <div className={classes.root}>
+        
         <AppBar position="static">
           <Toolbar>            
             <Typography className={classes.title} variant="h6" color="inherit" noWrap>
